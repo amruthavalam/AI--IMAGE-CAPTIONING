@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Captioning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #121212;
+            color: white;
+            padding: 20px;
+        }
+        #container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        input {
+            margin: 20px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: white;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff9800;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        img {
+            max-width: 100%;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AI Image Captioning</h1>
+    <div id="container">
+        <input type="file" id="imageInput">
+        <button onclick="uploadImage()">Generate Caption</button>
+        <p id="caption"></p>
+        <img id="preview" style="display:none;">
+    </div>
+
+    <script>
+        function uploadImage() {
+            const input = document.getElementById('imageInput');
+            if (input.files.length === 0) {
+                alert('Please select an image');
+                return;
+            }
+
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('caption').innerText = "Caption: " + data.caption;
+                const imgPreview = document.getElementById('preview');
+                imgPreview.src = URL.createObjectURL(file);
+                imgPreview.style.display = 'block';
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+</body>
+</html>
